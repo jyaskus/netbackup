@@ -1,0 +1,5 @@
+name 'netbackup'
+maintainer 'Jeff Yaskus'
+maintainer_email 'jeffyaskus@gmail.com'
+description 'Installs/Configures netbackup clients'
+version '1.0.0'
