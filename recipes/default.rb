@@ -6,8 +6,13 @@
 # by default these should not display
 Chef::Log.level = :info
 
-untag('netbackup_legacy')
-tag('netbackup_pci')
+# this can be used to testing the various flags
+# there should be at least (2) : 
+#   netbackup_legacy and netbackup_pci
+
+# examples of tag and untag usage
+#tag('netbackup_legacy')
+#untag('netbackup_pci')
 
 # a "safe word" to prevent netbackup from installing software
 return if tagged?('netbackup_ignore')
