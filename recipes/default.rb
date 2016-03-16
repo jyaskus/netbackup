@@ -6,7 +6,7 @@
 # by default these should not display
 Chef::Log.level = :info
 
-tag('netbackup_legacy')
+untag('netbackup_legacy')
 untag('netbackup_pci')
 
 # a "safe word" to prevent netbackup from installing software

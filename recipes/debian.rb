@@ -22,5 +22,5 @@ if install_mode(tagged?('netbackup_legacy'), tagged?('netbackup_pci')) == :none
   include_recipe 'netbackup::unix_configure'
 
   # configure the exclude list for the client
-#  include_recipe 'netbackup::unix_excludes'
+  include_recipe 'netbackup::unix_excludes'
 end
