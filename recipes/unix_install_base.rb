@@ -33,7 +33,7 @@ Chef::Log.info(" source = #{remote_filename} local = #{local_filename}")
 # grab remote file
 remote_file local_filename do
   source remote_filename
-  checksum node['netbackup'][pfamily]['client_base_sum']
+#  checksum node['netbackup'][pfamily]['client_base_sum']
   owner 'root'
   group 'root'
   mode '0755'

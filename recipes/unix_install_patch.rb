@@ -22,7 +22,7 @@ end
 # grab remote file
 remote_file "#{Chef::Config['file_cache_path']}/#{node['netbackup'][pfamily]['client_patch_tar']}" do
   source "#{node['netbackup'][pfamily]['client_patch_url']}/#{node['netbackup'][pfamily]['client_patch_tar']}"
-  checksum node['netbackup'][pfamily]['client_patch_sum']
+#  checksum node['netbackup'][pfamily]['client_patch_sum']
   owner 'root'
   group 'root'
   mode '00755'

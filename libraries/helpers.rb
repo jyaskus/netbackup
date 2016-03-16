@@ -57,6 +57,11 @@ module NetBackup
         cmd = Mixlib::ShellOut.new('df -P -k /var | tail -1 | awk \'{print $4}\' ')
         cmd.run_command
         cmd.stdout.to_i
+      when 'debian'
+        # uses posix output to deal with varying linux output styles
+        cmd = Mixlib::ShellOut.new('df -P -k /var | tail -1 | awk \'{print $4}\' ')
+        cmd.run_command
+        cmd.stdout.to_i
       when 'solaris2'
         # solaris doesnt support POSIX
         cmd = Mixlib::ShellOut.new('df -k /var | tail -1 | awk \'{print $4}\' ')
@@ -70,6 +75,11 @@ module NetBackup
     def usr_disk_space
       case node['platform_family']
       when 'rhel'
+        # uses posix output to deal with varying linux output styles
+        cmd = Mixlib::ShellOut.new('df -P -k /usr | tail -1 | awk \'{print $4}\' ')
+        cmd.run_command
+        cmd.stdout.to_i
+      when 'debian'
         # uses posix output to deal with varying linux output styles
         cmd = Mixlib::ShellOut.new('df -P -k /usr | tail -1 | awk \'{print $4}\' ')
         cmd.run_command
@@ -150,188 +160,184 @@ module NetBackup
       hostname = node['hostname']
       if legacy
         if pci
-          servers_legacy_pci
+          servers_environment_legacy_pci
         else
-          servers_legacy_nonpci
+          servers_environment_legacy_nonpci
         end
       else
-        if pci # P1
-          servers_p1
-        elsif hostname.match(/0864/)
-          servers_864
-        elsif hostname.match(/0870/)
-          servers_864
+        if pci 
+          servers_environment_pci
         else
-          servers_319
+          servers_environment_nonpci
         end
       end
     end
 
     ## LINUX
-    def linux_server_policy(legacy, servername)
-      if legacy
-        if servername.match(/t/)
-          return 'LINUX_Test_Servers_Via_Network'
-        else
-          return 'LINUX_Servers_Via_Network'
-        end
-      else
-        # non-legacy servers
-        if servername.match(/t/)
-          return 'LINUX_Test_OS'
-        else
-          return 'LINUX_OS'
-        end
-      end
-    end
+ #   def linux_server_policy(legacy, servername)
+ #     if legacy
+ #       if servername.match(/t/)
+ #         return 'LINUX_Test_Servers_Via_Network'
+ #       else
+ #         return 'LINUX_Servers_Via_Network'
+ #       end
+ #     else
+ #       # non-legacy servers
+ #       if servername.match(/t/)
+ #         return 'LINUX_Test_OS'
+ #       else
+ #         return 'LINUX_OS'
+ #       end
+ #     end
+ #   end
 
-    def linux_app_policy(legacy, servername)
-      # u01 is the default unix app data volume #
-      if legacy
-        if servername.match(/t/)
-          return 'APPL_Test_Ntwk_u01'
-        else
-          return 'APPL_Ntwk_u01'
-        end
-      else
-        # non-legacy servers
-        if servername.match(/t/)
-          return 'LINUX_Test_APP_U01'
-        else
-          return 'LINUX_APP_U01'
-        end
-      end
-    end
+ #   def linux_app_policy(legacy, servername)
+ #     # u01 is the default unix app data volume #
+ #     if legacy
+ #       if servername.match(/t/)
+ #         return 'APPL_Test_Ntwk_u01'
+ #       else
+ #         return 'APPL_Ntwk_u01'
+ #       end
+ #     else
+ #       # non-legacy servers
+ #       if servername.match(/t/)
+ #         return 'LINUX_Test_APP_U01'
+ #       else
+ #         return 'LINUX_APP_U01'
+ #       end
+ #     end
+ #   end
 
-    def linux_db_policy(legacy, servername)
-      if legacy
-        if servername.match(/t/)
-          return 'APPL_Ntwk_Test_Oracle'
-        else
-          return 'APPL_Ntwk_Oracle'
-        end
-      else
-        # non-legacy servers
-        if servername.match(/t/)
-          return 'LINUX_Test_APP_DB'
-        else
-          return 'LINUX_APP_DB'
-        end
-      end
-    end
+ #   def linux_db_policy(legacy, servername)
+ #     if legacy
+ #       if servername.match(/t/)
+ #         return 'APPL_Ntwk_Test_Oracle'
+ #       else
+ #         return 'APPL_Ntwk_Oracle'
+ #       end
+ #     else
+ #       # non-legacy servers
+ #       if servername.match(/t/)
+ #         return 'LINUX_Test_APP_DB'
+ #       else
+ #         return 'LINUX_APP_DB'
+ #       end
+ #     end
+ #   end
 
     ## Solaris
-    def solaris_server_policy(legacy, servername)
-      if legacy
-        if servername.match(/t/)
-          return 'SUN_Test_Servers_Via_Network'
-        else
-          return 'SUN_Servers_Via_Network'
-        end
-      else
-        # non-legacy servers
-        if servername.match(/t/)
-          return 'SOLARIS_Test_OS'
-        else
-          return 'SOLARIS_OS'
-        end
-      end
-    end
+ #   def solaris_server_policy(legacy, servername)
+ #     if legacy
+ #       if servername.match(/t/)
+ #         return 'SUN_Test_Servers_Via_Network'
+ #       else
+ #         return 'SUN_Servers_Via_Network'
+ #       end
+ #     else
+ #       # non-legacy servers
+ #       if servername.match(/t/)
+ #         return 'SOLARIS_Test_OS'
+ #       else
+ #         return 'SOLARIS_OS'
+ #       end
+ #     end
+ #   end
 
-    def solaris_app_policy(legacy, servername)
-      # u01 is the default unix app data volume #
-      if legacy
-        if servername.match(/t/)
-          return 'APPL_Test_Ntwk_u01'
-        else
-          return 'APPL_Ntwk_u01'
-        end
-      else
-        # non-legacy servers
-        if servername.match(/t/)
-          return 'SOLARIS_Test_APP_U01'
-        else
-          return 'SOLARIS_APP_U01'
-        end
-      end
-    end
+ #   def solaris_app_policy(legacy, servername)
+ #     # u01 is the default unix app data volume #
+ #     if legacy
+ #       if servername.match(/t/)
+ #         return 'APPL_Test_Ntwk_u01'
+ #       else
+ #         return 'APPL_Ntwk_u01'
+ #       end
+ #     else
+ #       # non-legacy servers
+ #       if servername.match(/t/)
+ #         return 'SOLARIS_Test_APP_U01'
+ #       else
+ #         return 'SOLARIS_APP_U01'
+ #       end
+ #     end
+ #   end
 
-    def solaris_db_policy(legacy, servername)
-      if legacy
-        if servername.match(/t/)
-          return 'APPL_Ntwk_Test_Oracle'
-        else
-          return 'APPL_Ntwk_Oracle'
-        end
-      else
-        # non-legacy servers
-        if servername.match(/t/)
-          return 'SOLARIS_Test_APP_DB'
-        else
-          return 'SOLARIS_APP_DB'
-        end
-      end
-    end
+ #   def solaris_db_policy(legacy, servername)
+ #     if legacy
+ #       if servername.match(/t/)
+ #         return 'APPL_Ntwk_Test_Oracle'
+ #       else
+ #         return 'APPL_Ntwk_Oracle'
+ #       end
+ #     else
+ #       # non-legacy servers
+ #       if servername.match(/t/)
+ #         return 'SOLARIS_Test_APP_DB'
+ #       else
+ #         return 'SOLARIS_APP_DB'
+ #       end
+ #     end
+ #   end
 
-    def get_server_policy(legacy, servername)
-      case node['platform_family']
-      when 'rhel'
-        return linux_server_policy(legacy, servername)
-      when 'solaris2'
-        return solaris_server_policy(legacy, servername)
-      else
-        return nil
-      end
-    end
+ #   def get_server_policy(legacy, servername)
+ #     case node['platform_family']
+ #     when 'rhel'
+ #       return linux_server_policy(legacy, servername)
+ #     when 'solaris2'
+ #       return solaris_server_policy(legacy, servername)
+ #     else
+ #       return nil
+ #     end
+ #   end
 
-    def get_app_policy(legacy, servername)
-      case node['platform_family']
-      when 'rhel'
-        return linux_app_policy(legacy, servername)
-      when 'solaris2'
-        return solaris_app_policy(legacy, servername)
-      else
-        return nil
-      end
-    end
+ #   def get_app_policy(legacy, servername)
+ #     case node['platform_family']
+ #     when 'rhel'
+ #       return linux_app_policy(legacy, servername)
+ #     when 'solaris2'
+ #       return solaris_app_policy(legacy, servername)
+ #     else
+ #       return nil
+ #     end
+ #   end
 
-    def get_db_policy(legacy, servername)
-      case node['platform_family']
-      when 'rhel'
-        return linux_db_policy(legacy, servername)
-      when 'solaris2'
-        return solaris_db_policy(legacy, servername)
-      else
-        return nil
-      end
-    end
+ #   def get_db_policy(legacy, servername)
+ #     case node['platform_family']
+ #     when 'rhel'
+ #       return linux_db_policy(legacy, servername)
+ #     when 'solaris2'
+ #       return solaris_db_policy(legacy, servername)
+ #     else
+ #       return nil
+ #     end
+ #   end
 
     def netbackup_env_servers(master_server)
       case master_server
       when 'master1'
-        servers_environment_a
+        servers_environment_legacy_nonpci
       when 'master2'
-        servers_environment_b
+        servers_environment_legacy_pci
       when 'master3'
-        servers_environment_c
+        servers_environment_nonpci
       when 'master4'
-        servers_environment_d
+        servers_environment_pci
       end
     end
 
-    def servers_environment_a
+    def servers_environment_legacy_nonpci
       %w(master1 media1_1 media1_2)
     end
 
-    def servers_environment_b
+    def servers_environment_legacy_pci
       %w(master2 media2_1 media2_2)
     end
 
-    def servers_environment_c
+    def servers_environment_nonpci
       %w(master3 media3_1 media3_2)
     end
 
-    def servers_environment_d
+    def servers_environment_pci
       %w(master4 media4_1 media4_2)
     end
 

@@ -4,7 +4,10 @@
 
 # enable to display INFO messages
 # by default these should not display
-# Chef::Log.level = :info
+Chef::Log.level = :info
+
+tag('netbackup_legacy')
+untag('netbackup_pci')
 
 # a "safe word" to prevent netbackup from installing software
 return if tagged?('netbackup_ignore')
@@ -14,6 +17,8 @@ when 'windows'
   include_recipe 'netbackup::windows'
 when 'rhel'
   include_recipe 'netbackup::redhat'
+when 'debian'
+  include_recipe 'netbackup::debian'
 when 'solaris2'
   include_recipe 'netbackup::solaris'
 else

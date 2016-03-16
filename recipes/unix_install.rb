@@ -19,7 +19,7 @@ else
 end
 
 # debug - display tags
-# Chef::Log.info " --- install mode = #{install_mode(tagged?('netbackup_legacy'), tagged?('netbackup_pci'))} ---"
+ Chef::Log.info " --- install mode = #{install_mode(tagged?('netbackup_legacy'), tagged?('netbackup_pci'))} ---"
 
 case install_mode(tagged?('netbackup_legacy'), tagged?('netbackup_pci'))
 when :appliance
