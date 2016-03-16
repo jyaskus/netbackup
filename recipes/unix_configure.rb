@@ -19,6 +19,8 @@ pfamily = node['platform_family']
 server_list = netbackup_server_list(tagged_legacy, tagged_pci)
 master_server = server_list[0]
 
+Chef::Log.info('existing Master = ' + existing_master )
+
 if File.file? '/usr/openv/netbackup/bp.conf'
 
  # check if the user added CUSTOM anywhere in the bp.con
@@ -56,30 +58,6 @@ end # if file exists
 
 # update server list in case MASTER was changed
 server_list = netbackup_env_servers(master_server)
-
-# --- CHECK VLANs --- #
-# IF it is found to exist on a tagged VLAN -
-# then we need to add it as the first SERVER entry
-
-# determine the netmask
-#set_ip_netmask
-
-# set local variables for default network
-#ip_netmask = node['netmask']
-#ip_address = node['ipaddress']
-
-# check if it matches any known tagged VLAN subnets
-# use the hash table lookup
-#vlantag = lookup_vlan(ip_address, ip_netmask)
-
-#unless vlantag.nil?
-#  Chef::Log.info(logheader + "This clients address #{ip_address} is on a known tagged VLAN (#{vlantag})")
-
-#  # adds the tagged vlan as first entry in server list
-#  server_list.unshift(vlantag)
-#  # else
-#  #  Chef::Log.info(logheader + "--- NetBackup --- No tagged VLANs found for this IP address (#{ip_address})")
-#end
 
 # if we got this far, assumes we passed all of the logic checks
 

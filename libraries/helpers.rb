@@ -116,53 +116,26 @@ module NetBackup
     ## LINUX
     def get_server_policy(legacy, servername)
       if legacy
-        if servername.match(/t/)
-          return 'LINUX_Servers_Test'
-        else
           return 'LINUX_Servers'
-        end
       else
-        # non-legacy servers
-        if servername.match(/t/)
-          return 'LINUX_OS_Test'
-        else
           return 'LINUX_OS'
-        end
       end
     end
 
     def get_app_policy(legacy, servername)
       # u01 is the default unix app data volume #
       if legacy
-        if servername.match(/t/)
-          return 'APPL_Data_Test'
-        else
           return 'APPL_Data'
-        end
       else
-        # non-legacy servers
-        if servername.match(/t/)
-          return 'LINUX_APP_Test'
-        else
           return 'LINUX_APP'
-        end
       end
     end
 
     def get_db_policy(legacy, servername)
       if legacy
-        if servername.match(/t/)
-          return 'APPL_Database_Test'
-        else
           return 'APPL_Database'
-        end
       else
-        # non-legacy servers
-        if servername.match(/t/)
-          return 'LINUX_APP_DB_Test'
-        else
           return 'LINUX_APP_DB'
-        end
       end
    end
 
